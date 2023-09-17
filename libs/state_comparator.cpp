@@ -60,3 +60,11 @@ int State_Comparator::get_total_manhattan_distances(const State& s) const
 
     return manhattan_distance_sum;
 }
+
+//! @brief Get the custom heuristic value for the state.
+//! @param s The state.
+//! @return The heuristic value of state.
+int State_Comparator::get_heuristic_value(const State& s) const
+{
+    return get_total_manhattan_distances(s) + get_number_of_stored_boxes(s) * -1000;
+}

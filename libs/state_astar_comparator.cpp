@@ -13,8 +13,8 @@ bool State_Astar_Comparator::operator()(const State& s1, const State& s2) const
 //! @return True if s1 > s2. False if s1 <= s2.
 bool State_Astar_Comparator::is_greater_than(const State& s1, const State& s2) const
 {
-    int f1 = get_total_manhattan_distances(s1) + s1.current_total_distance_from_start + get_number_of_stored_boxes(s1) * -1000;
-    int f2 = get_total_manhattan_distances(s2) + s2.current_total_distance_from_start + get_number_of_stored_boxes(s2) * -1000;
+    int f1 = s1.current_total_distance_from_start + get_heuristic_value(s1);
+    int f2 = s2.current_total_distance_from_start + get_heuristic_value(s2);
 
     return f1 > f2;
 }
@@ -25,8 +25,8 @@ bool State_Astar_Comparator::is_greater_than(const State& s1, const State& s2) c
 //! @return True if s1 < s2. False if s1 >= s2.
 bool State_Astar_Comparator::is_less_than(const State& s1, const State& s2) const
 {
-    int f1 = get_total_manhattan_distances(s1) + s1.current_total_distance_from_start + get_number_of_stored_boxes(s1) * -1000;
-    int f2 = get_total_manhattan_distances(s2) + s2.current_total_distance_from_start + get_number_of_stored_boxes(s2) * -1000;
+    int f1 = s1.current_total_distance_from_start + get_heuristic_value(s1);
+    int f2 = s2.current_total_distance_from_start + get_heuristic_value(s2);
 
     return f1 < f2;
 }

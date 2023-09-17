@@ -11,8 +11,8 @@ bool State_Gfs_Comparator::operator()(const State& s1, const State& s2) const
 //! @return True if s1 > s2. False if s1 <= s2.
 bool State_Gfs_Comparator::is_greater_than(const State& s1, const State& s2) const
 {
-    int f1 = get_total_manhattan_distances(s1);
-    int f2 = get_total_manhattan_distances(s2);
+    int f1 = get_heuristic_value(s1);
+    int f2 = get_heuristic_value(s2);
 
     return f1 > f2;
 }
@@ -23,8 +23,8 @@ bool State_Gfs_Comparator::is_greater_than(const State& s1, const State& s2) con
 //! @return True if s1 < s2. False if s1 >= s2.
 bool State_Gfs_Comparator::is_less_than(const State& s1, const State& s2) const
 {
-    int f1 = get_total_manhattan_distances(s1);
-    int f2 = get_total_manhattan_distances(s2);
+    int f1 = get_heuristic_value(s1);
+    int f2 = get_heuristic_value(s2);
 
     return f1 < f2;
 }

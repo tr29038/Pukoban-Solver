@@ -22,4 +22,5 @@ class State_Comparator
         int get_number_of_stored_boxes(const State&) const;
         bool has_box(const State&, Position) const;
         int get_total_manhattan_distances(const State&) const;
+        int get_heuristic_value(const State&) const;
 };
