@@ -1,0 +1,16 @@
+OOOOOOOOOOOO
+OS         O
+O          O
+O          O
+O  OOO     O
+O          O
+O          O
+O      OOO O
+O          O
+O          O
+O OOOO     O
+O     B    O
+O          O
+O          O
+O      R   O
+OOOOOOOOOOOO
