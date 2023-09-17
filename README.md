@@ -13,6 +13,10 @@ The following are permitted characters:
 `S` denotes a storage, there must be the same number of storages and boxes where each is > 1.  
 `B` denotes a box, there must be the same number of storages and boxes where each is > 1.  
 
+# Requirements
+CMake version 3.5+  
+GNU g++ version 11.4.0+  
+
 # Getting Started
 Run the following commands:  
 ```
