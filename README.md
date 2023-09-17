@@ -44,3 +44,11 @@ For a list of options, run the command:
 `dfs` = Depth first search.  
 `astar` = A*.  
 `gfs` = Greedy best-first search.  
+
+# Solving All Puzzles
+To run an algorithm on all puzzles available in the `puzzles` directory, run the following commands in the `build` directory.  
+```
+./run_algorithm_on_all_puzzles.sh <dfs|bfs|astar|gfs>
+```
+
+All solution paths will be written to a corresponding file: `pukoban-solver/puzzles/solutions/<algorithm>/<puzzle-file-name>.out`.
