@@ -6,7 +6,7 @@ A standalone puzzle must occupy its own file.
 
 A puzzle can be of any size, MxN, where M > 0 and N > 0.
 
-The following are permitted characters:
+The following are permitted characters:  
 `O` denotes a wall/obstruction.  
 ` ` denotes an empty space.  
 `R` denotes the robot, there must be one and only one robot.  
@@ -14,14 +14,14 @@ The following are permitted characters:
 `B` denotes a box, there must be the same number of storages and boxes where each is > 1.  
 
 # Getting Started
-Run the following commands:
+Run the following commands:  
 ```
 git clone https://github.com/tr29038/Pukoban-Solver.git
-cd <absolute-path/pukoban-solver>
+cd ./pukoban-solver
 ```
 
 # Compiling
-Run the following commands:
+Run the following commands:  
 ```
 cd ./build
 ./build.sh
@@ -29,18 +29,18 @@ make
 ```
 
 # Running
-Run the following command:
+Run the following command:  
 ```
 ./pukoban_solver ../puzzles/puzzle_1.txt astar ./output.txt
 ```
 
-For a list of options, run the command:
+For a list of options, run the command:  
 ```
 ./pukoban_solver
 ```
 
 # Algorithms
-`bfs` = Breadth first search.
-`dfs` = Depth first search.
-`astar` = A*.
-`gfs` = Greedy best-first search.
+`bfs` = Breadth first search.  
+`dfs` = Depth first search.  
+`astar` = A*.  
+`gfs` = Greedy best-first search.  
