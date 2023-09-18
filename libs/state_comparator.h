@@ -4,6 +4,7 @@
 #include <state.h>
 #include <position_hash.h>
 
+#include <list>
 #include <unordered_set>
 
 class State;
@@ -18,9 +19,7 @@ class State_Comparator
 
     protected:
         int get_manhattan_distance(Position, Position) const;
-        int get_nearest_storage_distance(const State&, Position) const;
-        int get_number_of_stored_boxes(const State&) const;
-        bool has_box(const State&, Position) const;
-        int get_total_manhattan_distances(const State&) const;
+        int get_robot_to_nearest_box_distance(const State&) const;
+        std::list<std::tuple<std::string, std::string, int>> get_distances(const State&) const;
         int get_heuristic_value(const State&) const;
 };

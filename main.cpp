@@ -47,7 +47,10 @@ int main(int argc, char* argv[])
     auto stop = std::chrono::high_resolution_clock::now();
     auto duration_s = std::chrono::duration_cast<std::chrono::seconds>(stop - start);
     auto duration_ms = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
-    std::cout << "Time to solve " << argv[1] << " using " << argv[2] << ": " << duration_s.count() << '.' << (duration_ms.count() % 100) << "s\n";
+    std::cout
+        << "Time to solve " << argv[1]
+	<< " with " << solution_path.size() << " moves using " << argv[2] << ": "
+	<< duration_s.count() << '.' << (duration_ms.count() % 100) << "s\n";
 
     std::ofstream output(argv[3]);
     while (!solution_path.empty())
