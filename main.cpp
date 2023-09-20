@@ -49,7 +49,7 @@ int main(int argc, char* argv[])
     auto duration_ms = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
     std::cout
         << "Time to solve " << argv[1]
-	<< " with " << solution_path.size() << " moves using " << argv[2] << ": "
+	<< " with " << (solution_path.size() - 1) << " moves using " << argv[2] << ": "
 	<< duration_s.count() << '.' << (duration_ms.count() % 100) << "s\n";
 
     std::ofstream output(argv[3]);
