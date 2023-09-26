@@ -4,7 +4,7 @@
 
 bool State_Astar_Comparator::operator()(const State& s1, const State& s2) const
 {
-    return is_greater_than(s1, s2);
+    return is_less_than(s1, s2);
 }
 
 //! @brief Check if s1 is greater than s2 using the sum of manhattan distances, distance from the initial state, and the number of stored boxes.

@@ -41,17 +41,19 @@ int main(int argc, char* argv[])
     if (solution_path.empty())
     {
         std::cout << "The puzzle is unsolveable.\n";
-        return 1;
+        return 0;
     }
 
     auto stop = std::chrono::high_resolution_clock::now();
     auto duration_s = std::chrono::duration_cast<std::chrono::seconds>(stop - start);
     auto duration_ms = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
+
     std::cout
         << "Time to solve " << argv[1]
-	<< " with " << (solution_path.size() - 1) << " moves using " << argv[2] << ": "
-	<< duration_s.count() << '.' << (duration_ms.count() % 100) << "s\n";
+	    << " with " << (solution_path.size() - 1) << " moves using " << argv[2] << ": "
+	    << duration_s.count() << '.' << (duration_ms.count() % 100) << "s\n";
 
+    // Output solution path.
     std::ofstream output(argv[3]);
     while (!solution_path.empty())
     {
@@ -60,4 +62,6 @@ int main(int argc, char* argv[])
         output << '\n';
         solution_path.pop_back();
     }
+
+    return 0;
 }

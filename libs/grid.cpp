@@ -25,25 +25,28 @@ void Grid::print(const State& state, std::ostream& output_stream) const
 {
     auto grid_copy(grid);
 
+    // Assign state pieces to the grid copy.
     for (const auto& storage_position : state.storage_positions)
         grid_copy[storage_position.y][storage_position.x].piece = piece_to_char(PIECES::STORAGE);
     for (const auto& box_position : state.box_positions)
         grid_copy[box_position.y][box_position.x].piece = piece_to_char(PIECES::BOX);
     grid_copy[state.robot_position.y][state.robot_position.x].piece = piece_to_char(PIECES::ROBOT);
 
+    // Print the grid + the state.
     for (const auto& row : grid_copy)
     {
         for (const auto& node : row)
-	{
+        {
             output_stream << node.piece;
-	}
+        }
         output_stream << '\n';
     }
 }
 
 //! @brief Solve the pukoban puzzle.
 //! @param algorithm The algorithm to solve the puzzle with.
-//! @returns The populated state sequence solution to the puzzle from start to finish, if it is solveable. Else an empty vector.
+//! @return The populated state sequence solution to the puzzle from start to finish, if it is solveable. Else an empty vector.
+//! @throw std::runtime_error if an invalid algorithm was provided.
 std::vector<State> Grid::solve(const std::string& algorithm) const
 {
     std::vector<State> result;
@@ -80,19 +83,19 @@ std::vector<State> Grid::breadth_first_search() const
 
         std::vector<State> successor_states;
         for (auto direction : d.directions)
-	{
+        {
             auto some_successor_states = get_legal_successor_states(current_state, direction);
             successor_states.insert(successor_states.end(), some_successor_states.begin(), some_successor_states.end());
-	}
+        }
         for (const auto& successor_state : successor_states)
-	{
+        {
             if (is_closed_state(closed_states, successor_state))
                 continue;
 
             state_queue.push(successor_state);
             closed_states.insert(successor_state);
             came_from[successor_state] = current_state;
-	}
+        }
     }
 
     return {};
@@ -106,7 +109,7 @@ std::vector<State> Grid::depth_first_search() const
     std::unordered_set<State, State_Hash> closed_states;
     closed_states.insert(initial_state);
     std::stack<std::pair<State, std::vector<Position>>> state_stack;
-    state_stack.emplace(initial_state, d.directions);
+    state_stack.emplace(initial_state, d.directions); // Where d.directions is the directions not yet searched.
     while (!state_stack.empty())
     {
         auto [current_state, current_directions] = state_stack.top();
@@ -118,12 +121,13 @@ std::vector<State> Grid::depth_first_search() const
         auto current_direction = current_directions.back();
         current_directions.pop_back();
 
+        // State still has directions that have not been checked, add it back to the stack.
         if (!current_directions.empty())
             state_stack.emplace(current_state, current_directions);
 
         auto successor_states = get_legal_successor_states(current_state, current_direction);
         for (const auto& successor_state : successor_states)
-	{
+        {
             if (is_closed_state(closed_states, successor_state))
                 continue;
 
@@ -143,12 +147,14 @@ std::vector<State> Grid::astar() const
     std::shared_ptr<State_Comparator> comparator = std::make_shared<State_Astar_Comparator>();
     std::unordered_map<State, State, State_Hash> came_from;
     std::unordered_set<State, State_Hash> closed_states;
-    std::priority_queue<State, std::vector<State>, State_Astar_Comparator> state_queue;
-    state_queue.push(initial_state);
-    while (!state_queue.empty())
+    std::unordered_set<State, State_Hash> open_states;
+    open_states.insert(initial_state);
+    while (!open_states.empty())
     {
-        auto current_state = state_queue.top();
-        state_queue.pop();
+        State_Astar_Comparator comp;
+        auto current_state_iter = std::min_element(open_states.begin(), open_states.end(), comp);
+        auto current_state = *current_state_iter;
+        open_states.erase(current_state_iter);
         closed_states.insert(current_state);
 
         if (all_boxes_in_storage(current_state.box_positions, current_state.storage_positions))
@@ -157,21 +163,30 @@ std::vector<State> Grid::astar() const
         for (auto direction : d.directions)
         {
             auto successor_states = get_legal_successor_states(current_state, direction);
-            for (const auto& successor_state : successor_states)
-	    {
-                if (is_closed_state(closed_states, successor_state))
-		{
-                    auto successor_state_closed = std::find(closed_states.begin(), closed_states.end(), successor_state);
-		    if (comparator->is_less_than(successor_state, *successor_state_closed))
-                        closed_states.erase(successor_state_closed);
-                    else
+            for (auto& successor_state : successor_states)
+            {
+                auto successor_state_open = std::find(open_states.begin(), open_states.end(), successor_state);
+                if (successor_state_open != open_states.end())
+                {
+                    // If the state is open, but the state has a better heuristic, ignore the fact that it is open.
+                    if (!comparator->is_greater_than(*successor_state_open, successor_state))
                         continue;
-		}
+                    open_states.erase(successor_state_open);
+                }
 
-                state_queue.push(successor_state);
+                auto successor_state_closed = std::find(closed_states.begin(), closed_states.end(), successor_state);
+                if (successor_state_closed != closed_states.end())
+                {
+                    // If the successor state is closed, but has a better heuristic, ignore the fact that it is closed.
+                    if (!comparator->is_greater_than(*successor_state_closed, successor_state))
+                        continue;
+                    closed_states.erase(successor_state_closed);
+                }
+
+                open_states.insert(successor_state);
                 came_from.emplace(successor_state, current_state);
-	    }
-	}
+            }
+        }
     }
 
     return {};
@@ -199,14 +214,14 @@ std::vector<State> Grid::greedy_first_search() const
         {
             auto successor_states = get_legal_successor_states(current_state, direction);
             for (const auto& successor_state : successor_states)
-	    {
+            {
                 if (is_closed_state(closed_states, successor_state))
                     continue;
 
                 state_queue.push(successor_state);
                 came_from[successor_state] = current_state;
-	    }
-	}
+            }
+        }
     }
 
     return {};
@@ -238,7 +253,7 @@ std::optional<State> Grid::get_push_box_successor_state(State state, Position di
     box_iter->y += direction.y;
     state.robot_position.x += direction.x;
     state.robot_position.y += direction.y;
-    ++state.current_total_distance_from_start;
+    ++state.current_total_distance_from_start; // For A*, increment total distance from the initial state.
     return state;
 }
 
@@ -255,6 +270,7 @@ std::optional<State> Grid::get_normal_move_successor_state(State state, Position
 
     state.robot_position.x += direction.x;
     state.robot_position.y += direction.y;
+    ++state.current_total_distance_from_start;
     return state;
 }
 
@@ -282,7 +298,7 @@ std::optional<State> Grid::get_pull_box_successor_state(State state, Position di
     state.robot_position.y += direction.y;
     b_box_iter->x += direction.x;
     b_box_iter->y += direction.y;
-    ++state.current_total_distance_from_start;
+    ++state.current_total_distance_from_start; // For A*, increment total distance from the initial state.
     return state;
 }
 
@@ -368,7 +384,7 @@ bool Grid::can_move_to_position(const State& state, Position position) const
 //! @return True if the state is closed. False otherwise.
 bool Grid::is_closed_state(const std::unordered_set<State, State_Hash>& closed_states, const State& state) const
 {
-    return closed_states.count(state) > 0;
+    return std::find(closed_states.begin(), closed_states.end(), state) != closed_states.end();;
 }
 
 //! @brief Check if all box positions cover all storage positions.
@@ -448,36 +464,36 @@ void Grid::initialize(const std::string& grid_file)
         std::getline(file_stream, row_str);
         std::vector<Node> row;
         for (char piece : row_str)
-	{
+        {
             PIECES piece_non_char = char_to_piece(piece);
             if (State::is_state_piece(piece_non_char))
-	    {
+            {
                 if (char_to_piece(piece) == PIECES::ROBOT)
-		{
+                {
                     initial_state.robot_position = Position(row.size(), grid.size());
-		    ++number_of_robots;
-		}
+                    ++number_of_robots;
+                }
                 else if (char_to_piece(piece) == PIECES::BOX)
-		{
+                {
                     initial_state.box_positions.emplace_back(row.size(), grid.size());
-		    ++number_of_boxes;
-		}
+                    ++number_of_boxes;
+                }
                 else if (char_to_piece(piece) == PIECES::STORAGE)
-		{
+                {
                     initial_state.storage_positions.emplace_back(row.size(), grid.size());
-		    ++number_of_storages;
-		}
+                    ++number_of_storages;
+                }
                 row.emplace_back(Position(row.size(), grid.size()), piece_to_char(PIECES::BLANK));
-	    }
+            }
             else
-	    {
+            {
                 if (piece_non_char == PIECES::OBSTRUCTION)
                     ++number_of_obstructions;
-		else if (piece_non_char == PIECES::BLANK)
+                else if (piece_non_char == PIECES::BLANK)
                     ++number_of_blanks;
                 row.emplace_back(Position(row.size(), grid.size()), piece);
-	    }
-	}
+            }
+        }
         grid.push_back(row);
     }
 

@@ -9,13 +9,20 @@ std::size_t State_Hash::operator()(const State& s) const
 {
     std::hash<std::string> hasher;
     std::string hash;
-    for (const auto& box_position : s.box_positions)
+    std::stringstream ss;
+    for (auto box : s.box_positions)
+    {
+        ss << box;
+        hash.append(ss.str());
+        ss.str("");
+    }
+    for (auto storage : s.storage_positions)
     {
         std::stringstream ss;
-        ss << box_position;
+        ss << storage;
         hash.append(ss.str());
+        ss.str("");
     }
-    std::stringstream ss;
     ss << s.robot_position;
     hash.append(ss.str());
     return hasher(hash);

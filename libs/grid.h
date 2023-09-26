@@ -21,7 +21,7 @@ class Grid
 
         Grid() = delete;
 
-	std::vector<State> solve(const std::string&) const;
+        std::vector<State> solve(const std::string&) const;
         void print(const State&, std::ostream&) const;
 
     private:

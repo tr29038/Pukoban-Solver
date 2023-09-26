@@ -47,7 +47,7 @@ std::list<std::tuple<std::string, std::string, int>> State_Comparator::get_dista
             auto distance = get_manhattan_distance(box_position, storage_position);
 
             box_storage_distances.emplace(box_storage_distances.begin(), box_str, storage_str, distance);
-	}
+        }
     }
 
     box_storage_distances.sort([](const std::tuple<std::string, std::string, int>& element1, const std::tuple<std::string, std::string, int>& element2)
@@ -78,7 +78,10 @@ int State_Comparator::get_heuristic_value(const State& s) const
         if (std::find(marked_storages.begin(), marked_storages.end(), storage) != marked_storages.end())
             continue;
 
-        heuristic_value += distance;
+        if (distance == 0) // Box is stored.
+            heuristic_value += (-100); // Score stored boxes as really good.
+        else
+            heuristic_value += distance;
 
         // Mark box and storage to ensure no duplicate considerations.
         marked_boxes.insert(box);
