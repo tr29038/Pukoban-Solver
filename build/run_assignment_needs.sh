@@ -1,6 +1,6 @@
 #!/bin/bash
 
-declare -a algs=("astar" "gfs" "dfs" "bfs")
+declare -a algs=("astar" "gfs" "bfs" "dfs")
 
 for alg in "${algs[@]}"
 do
