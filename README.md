@@ -21,7 +21,7 @@ GNU g++ version 11.4.0+
 Run the following commands:  
 ```
 git clone https://github.com/tr29038/Pukoban-Solver.git
-cd ./pukoban-solver
+cd ./Pukoban-Solver
 ```
 
 # Compiling
